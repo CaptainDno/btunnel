@@ -588,6 +588,7 @@ func (conn *Connection) WriteMessage(payload []byte) error {
 	return nil
 }
 
+// ReadMessage reads next message from connection
 func (conn *Connection) ReadMessage() ([]byte, error) {
 	if conn.unfinishedBlockCount.Load() < 5 {
 		conn.logger.Warn("low amount of unfinished blocks", ProtoBittorrent, zap.Int("count", int(conn.unfinishedBlockCount.Load())))
@@ -623,6 +624,13 @@ func (conn *Connection) ReadMessage() ([]byte, error) {
 	// Increment count of received messages
 	conn.cntRx++
 	return payload, nil
+}
+
+// Close closes the underlying TCP connection, rendering this struct useless
+// Note: it is not safe to call Close when either ReadMessage or WriteMessage may be called by other goroutines.
+func (conn *Connection) Close() error {
+	conn.logger.Info("closing connection", ProtoTcp)
+	return conn.conn.Close()
 }
 
 func (conn *Connection) readFragmented(buf []byte) error {
