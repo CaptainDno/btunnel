@@ -130,20 +130,11 @@ type Connection struct {
 
 const MaxPieceCount = 10000
 
-func newLogger(connName string) *zap.Logger {
-	cfg := zap.NewDevelopmentConfig()
-	cfg.InitialFields = make(map[string]interface{})
-	cfg.InitialFields["conn"] = connName
-	return zap.Must(cfg.Build())
-
-}
-
 var ProtoTcp = zap.String("proto", "tcp")
 var ProtoBittorrent = zap.String("proto", "bittorrent")
 var ProtoBTun = zap.String("proto", "btun")
 
-func Connect(connName string, address string, keyID []byte, clientID string, keyStore KeyStore) (*Connection, error) {
-	logger := newLogger(connName)
+func Connect(logger *zap.Logger, address string, keyID []byte, clientID string, keyStore KeyStore) (*Connection, error) {
 
 	masterSecret := keyStore.GetKey(keyID)
 	if masterSecret == nil {
@@ -287,8 +278,7 @@ func Connect(connName string, address string, keyID []byte, clientID string, key
 	return connection, nil
 }
 
-func Accept(conn net.Conn, name string, keyStore KeyStore) (*Connection, error) {
-	logger := newLogger(name)
+func Accept(logger *zap.Logger, conn net.Conn, keyStore KeyStore) (*Connection, error) {
 	logger.Info("accepted new connection", ProtoTcp)
 	reader := bufio.NewReader(conn)
 
