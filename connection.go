@@ -278,7 +278,9 @@ func Connect(logger *zap.Logger, address string, keyID []byte, clientID string, 
 	return connection, nil
 }
 
-func Accept(logger *zap.Logger, conn net.Conn, keyStore KeyStore) (*Connection, error) {
+type ClientIDValidator func(clientID string) bool
+
+func Accept(logger *zap.Logger, conn net.Conn, keyStore KeyStore, validator ClientIDValidator) (*Connection, error) {
 	logger.Info("accepted new connection", ProtoTcp)
 	reader := bufio.NewReader(conn)
 
@@ -329,7 +331,10 @@ func Accept(logger *zap.Logger, conn net.Conn, keyStore KeyStore) (*Connection, 
 		if err != nil {
 			return nil, err
 		}
-		//TODO Use client ID somehow
+
+		if !validator(ch.ClientID) {
+			return nil, errors.New("invalid client id")
+		}
 
 		logger.Info("client hello received", ProtoBTun, zap.Any("client-hello", ch))
 
