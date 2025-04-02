@@ -464,7 +464,7 @@ func (conn *Connection) init() error {
 //	lastRequestedOffset
 //	unfinishedBlockCount
 func (conn *Connection) requestBlocks() error {
-	conn.logger.Info("requesting blocks", ProtoBittorrent)
+	conn.logger.Debug("requesting blocks", ProtoBittorrent)
 	var err error
 
 	// We use buffer to speed up the whole process
