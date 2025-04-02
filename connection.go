@@ -480,7 +480,7 @@ func (conn *Connection) requestBlocks() error {
 		}
 		currUBC++
 	}
-	for conn.unfinishedBlockCount.Load() < unfinishedBlockCountTarget {
+	for currUBC < unfinishedBlockCountTarget {
 		newOffset := conn.lastRequestedOffset + conn.blockSize
 		newPiece := conn.lastRequestedPiece
 		if newOffset >= conn.pieceSize {
