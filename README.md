@@ -19,6 +19,7 @@ which is not allowed by BittorrentSpec. This happens if client very rarely write
 ## Thread safety (VERY IMPORTANT)
 
 Safe scenario: two goroutines, one handles only writes and one only reads. Reads and writes may happen simultaneously
+
 UNSAFE scenario: multiple goroutines call `ReadMessage` or `WriteMessage` without some synchronization like mutex.
 
 **REMEMBER!** Race conditions may cause nonce repetition, which is **disastrous** for encryption algorithm used by this library.
