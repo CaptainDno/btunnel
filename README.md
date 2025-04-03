@@ -16,6 +16,9 @@ After that, both client and server will send `REQUEST` and `PIECE` messages as i
 *Note: sending of `REQUEST` messages is triggered only from `WriteMessage()` function. This means that sometimes it may seem like peer is sending unrequested `PIECE` messages
 which is not allowed by BittorrentSpec. This happens if client very rarely writes.* 
 
+Depending on the use case, traffic pattern may be different from usual bittorrent connections, 
+however analyzing all torrent connections should be pretty expensive due to sheer volume of traffic.
+
 ## Thread safety (VERY IMPORTANT)
 
 Safe scenario: two goroutines, one handles only writes and one only reads. Reads and writes may happen simultaneously
