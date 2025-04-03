@@ -134,6 +134,7 @@ var ProtoTcp = zap.String("proto", "tcp")
 var ProtoBittorrent = zap.String("proto", "bittorrent")
 var ProtoBTun = zap.String("proto", "btun")
 
+// Connect to server at address with keyID and keyStore and clientID.
 func Connect(logger *zap.Logger, address string, keyID []byte, clientID string, keyStore KeyStore) (*Connection, error) {
 
 	masterSecret := keyStore.GetKey(keyID)
@@ -280,6 +281,8 @@ func Connect(logger *zap.Logger, address string, keyID []byte, clientID string, 
 
 type ClientIDValidator func(clientID string) bool
 
+// Accept TCP connection and try to perform a handshake. TCP connection is not closed on failure.
+// ClientIDValidator is a function that can be used to refuse connection if validator(clientID) == false.
 func Accept(logger *zap.Logger, conn net.Conn, keyStore KeyStore, validator ClientIDValidator) (*Connection, error) {
 	logger.Info("accepted new connection", ProtoTcp)
 	reader := bufio.NewReader(conn)
